@@ -1,0 +1,68 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+vector<pair<int,int>> adj[100005];
+bool bool_arr[100005];
+int dis[100005];
+
+void init()
+{
+  for(int i=0; i<100005; i++)
+  {
+    bool_arr[i] = false;
+    adj[i].clear();
+    dis[i] = INT_MAX;
+  }
+}
+
+void algo(int n)
+{
+  multiset<pair<int,int>> pq;
+  pq.insert(make_pair(0,n));
+  while(pq.empty()!=true)
+  {
+    pair<int,int> temp = *pq.begin();
+    pq.erase(pq.begin());
+    int c = temp.first;
+    int u = temp.second;
+    if(bool_arr[u]==true)
+      continue;
+    bool_arr[u] = true;
+    for(int i=0; i<adj[u].size(); i++)
+    {
+      int c1 = adj[u][i].first;
+      int u1 = adj[u][i].second;
+      if(dis[u]+c1<dis[u1])
+      {
+        dis[u1] = dis[u] + c1;
+        pq.insert(make_pair(dis[u1],u1));
+      }
+    }
+  }
+}
+
+int main()
+{
+  int t;
+  scanf("%d",&t);
+  while(t--)
+  {
+    init();
+    int n, m, s, e;
+    scanf("%d%d%d%d",&n,&m,&s,&e);
+    dis[s] = 0;
+    for(int i=1; i<=m; i++)
+    {
+      int u, v, c;
+      scanf("%d%d%d",&u,&v,&c);
+      adj[u].push_back(make_pair(c,v));
+      adj[v].push_back(make_pair(c,u));
+    }
+    algo(s);
+    if(dis[e]==INT_MAX)
+      printf("NONE\n");
+    else
+      printf("%d\n",dis[e]);
+  }
+  return 0;
+}
